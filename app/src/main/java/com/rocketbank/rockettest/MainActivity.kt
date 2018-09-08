@@ -16,8 +16,13 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
         }
-        setImages()
         setListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        setImages()
     }
 
     private fun setImages() {

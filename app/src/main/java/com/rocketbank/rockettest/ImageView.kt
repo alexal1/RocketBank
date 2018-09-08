@@ -2,15 +2,13 @@ package com.rocketbank.rockettest
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.RectF
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 
 /**
- * Custom widget that draws given monochromatic matrix of pixels.
+ * Custom widget that draws given three-color matrix of pixels.
  */
 class ImageView : View {
 
@@ -24,11 +22,14 @@ class ImageView : View {
     private var fullRedrawFlag = false
     private var lastI = -1
     private var lastJ = -1
-    private var pixelSize = 0f
-    private val rectangle = RectF()
-    private val paintWhite = Paint().apply { color = Color.WHITE }
-    private val paintBlack = Paint().apply { color = Color.BLACK }
-    private val colorGrey = ContextCompat.getColor(context, R.color.grey)
+    private var pixelWidth = 0f
+    private var pixelHeight = 0f
+    private val colorWhite = ContextCompat.getColor(context, R.color.white)
+    private val colorBlack = ContextCompat.getColor(context, R.color.black)
+    private val colorRed = ContextCompat.getColor(context, R.color.red)
+    private val paintWhite = Paint().apply { color = colorWhite }
+    private val paintBlack = Paint().apply { color = colorBlack }
+    private val paintReplacement = Paint().apply { color = colorRed }
 
     fun drawImage(image: Image) {
         currentImage = image
@@ -45,49 +46,28 @@ class ImageView : View {
     }
 
     private fun drawImageOnCanvas(canvas: Canvas, image: Image) {
-        // Calculate rectangle
-        val canvasRatio = canvas.width.toFloat() / canvas.height.toFloat()
-        val imageRatio = image.columns.toFloat() / image.rows.toFloat()
-        if (canvasRatio > imageRatio) {
-            rectangle.top = 0f
-            rectangle.bottom = canvas.height.toFloat()
-            val imageWidth = canvas.height * imageRatio
-            rectangle.left = (canvas.width - imageWidth) / 2f
-            rectangle.right = rectangle.left + imageWidth
+        pixelWidth = canvas.width.toFloat() / image.columns.toFloat()
+        pixelHeight = canvas.height.toFloat() / image.rows.toFloat()
 
-            pixelSize = imageWidth / image.columns
-        }
-        else {
-            rectangle.left = 0f
-            rectangle.right = canvas.width.toFloat()
-            val imageHeight = canvas.width / imageRatio
-            rectangle.top = (canvas.height - imageHeight) / 2f
-            rectangle.bottom = rectangle.top + imageHeight
-
-            pixelSize = imageHeight / image.rows
-        }
-
-        // Clear canvas
-        canvas.drawColor(colorGrey)
-
-        // Actually draw
-        canvas.drawRect(rectangle, paintWhite)
         (0 until image.rows).forEach { i ->
             (0 until image.columns).forEach { j ->
-                if (image.matrix[i][j]) {
-                    drawPixelOnCanvas(canvas, i, j)
-                }
+                drawPixelOnCanvas(canvas, i, j, image.matrix[i][j])
             }
         }
     }
 
-    private fun drawPixelOnCanvas(canvas: Canvas, i: Int, j: Int) {
+    private fun drawPixelOnCanvas(canvas: Canvas, i: Int, j: Int, color: Image.Color) {
         if (i < 0 || j < 0) {
             return
         }
-        val left = rectangle.left + j * pixelSize
-        val top = rectangle.top + i * pixelSize
-        canvas.drawRect(left, top, left + pixelSize, top + pixelSize, paintBlack)
+        val left = j * pixelWidth
+        val top = i * pixelHeight
+        val paint = when(color) {
+            Image.Color.BLACK -> paintBlack
+            Image.Color.WHITE -> paintWhite
+            Image.Color.REPLACEMENT -> paintReplacement
+        }
+        canvas.drawRect(left, top, left + pixelWidth, top + pixelHeight, paint)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -99,7 +79,7 @@ class ImageView : View {
                 fullRedrawFlag = false
             }
             else {
-                drawPixelOnCanvas(canvas, lastI, lastJ)
+                drawPixelOnCanvas(canvas, lastI, lastJ, Image.Color.REPLACEMENT)
             }
         }
     }
