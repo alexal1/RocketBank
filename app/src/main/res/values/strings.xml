@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RocketTest</string>
+    <string name="size">Size</string>
+    <string name="generate">Generate</string>
+    <string name="speed">Speed</string>
+    <string name="cross" translatable="false">X</string>
 </resources>
