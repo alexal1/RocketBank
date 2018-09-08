@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
-    <View
+    <com.rocketbank.rockettest.ImageView
         android:id="@+id/imageA"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerA" />
 
-    <View
+    <com.rocketbank.rockettest.ImageView
         android:id="@+id/imageB"
         android:layout_width="0dp"
         android:layout_height="0dp"
