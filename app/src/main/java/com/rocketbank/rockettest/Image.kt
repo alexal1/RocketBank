@@ -3,43 +3,52 @@ package com.rocketbank.rockettest
 import java.util.*
 
 /**
- * Class that represents image as a matrix of pixels and all needed operations with it.
+ * Data structure class that represents image as a matrix of pixels.
  */
 class Image {
 
     enum class Color { WHITE, BLACK, REPLACEMENT }
 
-    val rows: Int
-    val columns: Int
-    val matrix: Array<Array<Color>>
+    val size: Size
+    private val matrix: Array<Array<Color>>
 
-    constructor(rows: Int, columns: Int) {
-        this@Image.rows = rows
-        this@Image.columns = columns
-        this@Image.matrix = Array(rows) { _ -> Array(columns) { _ -> Color.WHITE } }
+    constructor(size: Size) {
+        this@Image.size = size
+        this@Image.matrix = Array(size.rows) { _ -> Array(size.columns) { _ -> Color.WHITE } }
     }
 
     constructor(otherImage: Image) {
-        this@Image.rows = otherImage.rows
-        this@Image.columns = otherImage.columns
-        this@Image.matrix = Array(rows) { i -> Array(columns) { j -> otherImage.matrix[i][j] } }
+        this@Image.size = otherImage.size
+        this@Image.matrix = Array(size.rows) { i -> Array(size.columns) { j -> otherImage.matrix[i][j] } }
     }
 
     private val random = Random()
 
     fun fillRandomly() {
-        (0 until rows).forEach { i ->
-            (0 until columns).forEach {j ->
-                matrix[i][j] = if (random.nextBoolean()) Color.WHITE else Color.BLACK
+        (0 until size.rows).forEach { i ->
+            (0 until size.columns).forEach {j ->
+                set(i, j, if (random.nextBoolean()) Color.WHITE else Color.BLACK)
             }
         }
     }
 
-    fun fill(i: Int, j: Int) {
-        if (matrix[i][j] == Color.BLACK) {
-            throw Exception("Cannot fill this point as it is black")
+    operator fun set(pixel: Pixel, color: Color) {
+        set(pixel.i, pixel.j, color)
+    }
+
+    operator fun get(pixel: Pixel): Color {
+        return get(pixel.i, pixel.j)
+    }
+
+    @Synchronized fun set(i: Int, j: Int, color: Color) {
+        if (color == Color.REPLACEMENT && matrix[i][j] == Color.BLACK) {
+            throw Exception("You cannot replace black pixels!")
         }
-        matrix[i][j] = Color.REPLACEMENT
+        matrix[i][j] = color
+    }
+
+    @Synchronized fun get(i: Int, j: Int): Color {
+        return matrix[i][j]
     }
 
 }
