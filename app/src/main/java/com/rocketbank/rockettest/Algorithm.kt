@@ -4,7 +4,7 @@ import java.util.concurrent.Future
 
 interface Algorithm : Runnable {
 
-    enum class Type { FLOOD_FILL }
+    enum class Type { FLOOD_FILL, SCAN_LINE }
 
     var image: Image
     var startPixel: Pixel
