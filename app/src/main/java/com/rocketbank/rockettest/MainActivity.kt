@@ -1,5 +1,6 @@
 package com.rocketbank.rockettest
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +16,12 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
+            updatesA.observe(this@MainActivity, Observer { pixel ->
+                this@MainActivity.imageA.invalidate()
+            })
+            updatesB.observe(this@MainActivity, Observer { pixel ->
+                this@MainActivity.imageB.invalidate()
+            })
         }
         setListeners()
     }
@@ -26,10 +33,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setImages() {
-        imageA.drawImage(mainViewModel.imageA)
-        imageB.drawImage(mainViewModel.imageB)
-        editRows?.setText(mainViewModel.imageA.rows.toString())
-        editColumns?.setText(mainViewModel.imageA.columns.toString())
+        mainViewModel.imageA?.let { imageA.drawImage(it) }
+        mainViewModel.imageB?.let { imageB.drawImage(it) }
+        editRows?.setText(mainViewModel.size.rows.toString())
+        editColumns?.setText(mainViewModel.size.columns.toString())
     }
 
     private fun setListeners() {
@@ -37,6 +44,9 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.generateNew()
             setImages()
         }
+
+        imageA.onPixelTouch = mainViewModel::startFromPixel
+        imageB.onPixelTouch = mainViewModel::startFromPixel
     }
 
 }
