@@ -3,14 +3,16 @@ package com.rocketbank.rockettest
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.FragmentActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -20,15 +22,16 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
-            updatesA.observe(this@MainActivity, Observer { pixel ->
+            updatesA.observe(this@MainActivity, Observer {
                 this@MainActivity.imageA.invalidate()
             })
-            updatesB.observe(this@MainActivity, Observer { pixel ->
+            updatesB.observe(this@MainActivity, Observer {
                 this@MainActivity.imageB.invalidate()
             })
         }
         setListeners()
         setSpinner()
+        setEditTexts()
     }
 
     override fun onResume() {
@@ -40,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     private fun setImages() {
         mainViewModel.imageA?.let { imageA.drawImage(it) }
         mainViewModel.imageB?.let { imageB.drawImage(it) }
+    }
+
+    private fun setEditTexts() {
         editRows?.setText(mainViewModel.size.rows.toString())
         editColumns?.setText(mainViewModel.size.columns.toString())
     }
@@ -48,6 +54,12 @@ class MainActivity : AppCompatActivity() {
         buttonGenerate.setOnClickListener {
             mainViewModel.generateNew()
             setImages()
+        }
+        buttonSize?.setOnClickListener {
+            val transaction = supportFragmentManager
+                    .beginTransaction()
+                    .addToBackStack(SizeChooseFragment.TAG)
+            SizeChooseFragment().show(transaction, SizeChooseFragment.TAG)
         }
 
         imageA.onPixelTouch = mainViewModel::startFromPixel
@@ -64,6 +76,23 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
         })
+
+        val textWatcher = object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable?) {
+                mainViewModel.setSize(
+                        editRows?.text?.toString() ?: "",
+                        editColumns?.text?.toString() ?: ""
+                )
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        }
+        editRows?.addTextChangedListener(textWatcher)
+        editColumns?.addTextChangedListener(textWatcher)
     }
 
     private fun setSpinner() {
@@ -95,6 +124,12 @@ class MainActivity : AppCompatActivity() {
 
         }
         spinnerB.setSelection(Algorithm.Type.values().indexOf(mainViewModel.algorithmTypeB))
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        setEditTexts()
     }
 
 }

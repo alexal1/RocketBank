@@ -16,7 +16,7 @@ class ImageHandler(val image: Image,
     companion object {
 
         const val MIN_DELAY = 0
-        const val MAX_DELAY = 1000
+        const val MAX_DELAY = 500
 
     }
 

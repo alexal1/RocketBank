@@ -2,6 +2,7 @@ package com.rocketbank.rockettest
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.text.TextUtils
 
 /**
  * ViewModel class for the MainActivity.
@@ -54,6 +55,19 @@ class MainViewModel : ViewModel() {
 
     fun startFromPixel(pixel: Pixel) {
         repository.startFromPixel(pixel)
+    }
+
+    fun setSize(rows: String, columns: String) {
+        if (rows.validate() && columns.validate()) {
+            repository.size = Size(rows = rows.toInt(), columns = columns.toInt())
+        }
+    }
+
+    private fun String.validate(): Boolean {
+        if (this@validate.isEmpty()) return false
+        if (!TextUtils.isDigitsOnly(this@validate)) return false
+        if (this@validate.toInt() == 0) return false
+        return true
     }
 
     override fun onCleared() {
