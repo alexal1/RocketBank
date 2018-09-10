@@ -37,7 +37,9 @@ class MainActivity : FragmentActivity() {
                 this@MainActivity.imageB.drawImage()
             })
             errors.observe(this@MainActivity, Observer { error ->
-                Toast.makeText(this@MainActivity, error.toString(), Toast.LENGTH_LONG).show()
+                if (error != null) {
+                    Toast.makeText(this@MainActivity, error.toString(), Toast.LENGTH_LONG).show()
+                }
             })
         }
 

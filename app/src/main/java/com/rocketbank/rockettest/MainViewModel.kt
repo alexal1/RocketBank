@@ -60,6 +60,8 @@ class MainViewModel : ViewModel() {
         repository.algorithmTypeA = algorithmTypeA
         repository.algorithmTypeB = algorithmTypeB
         repository.speed = speed
+
+        errors.postValue(null)
     }
 
     fun generateNew() {
