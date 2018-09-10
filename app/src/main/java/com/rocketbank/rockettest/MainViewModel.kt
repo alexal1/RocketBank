@@ -18,6 +18,7 @@ class MainViewModel : ViewModel() {
     val size: Size get() = repository.size
     val updatesA = MutableLiveData<Pixel>()
     val updatesB = MutableLiveData<Pixel>()
+    val errors = MutableLiveData<Throwable>()
     var algorithmTypeA = Algorithm.Type.FLOOD_FILL_BFS
         set(value) {
             field = value
@@ -44,6 +45,10 @@ class MainViewModel : ViewModel() {
             updatesB.postValue(pixel)
         }
 
+        repository.onOutOfMemoryError = { error ->
+            errors.postValue(error)
+        }
+
         repository.algorithmTypeA = algorithmTypeA
         repository.algorithmTypeB = algorithmTypeB
         repository.speed = speed
@@ -66,7 +71,14 @@ class MainViewModel : ViewModel() {
     private fun String.validate(): Boolean {
         if (this@validate.isEmpty()) return false
         if (!TextUtils.isDigitsOnly(this@validate)) return false
-        if (this@validate.toInt() == 0) return false
+        try {
+            if (this@validate.toInt() == 0) return false
+        }
+        catch (e: NumberFormatException) {
+            errors.postValue(e)
+            return false
+        }
+
         return true
     }
 

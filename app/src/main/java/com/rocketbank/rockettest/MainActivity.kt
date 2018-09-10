@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : FragmentActivity() {
@@ -22,13 +23,19 @@ class MainActivity : FragmentActivity() {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
+
             updatesA.observe(this@MainActivity, Observer {
                 this@MainActivity.imageA.drawImage()
             })
             updatesB.observe(this@MainActivity, Observer {
                 this@MainActivity.imageB.drawImage()
             })
+
+            errors.observe(this@MainActivity, Observer { error ->
+                Toast.makeText(this@MainActivity, error.toString(), Toast.LENGTH_LONG).show()
+            })
         }
+
         setListeners()
         setSpinner()
         setEditTexts()

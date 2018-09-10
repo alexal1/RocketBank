@@ -30,6 +30,7 @@ class Repository(private val executorService: ExecutorService) {
         }
     var onPixelFilledA: (Pixel) -> Unit = {}
     var onPixelFilledB: (Pixel) -> Unit = {}
+    var onOutOfMemoryError: (OutOfMemoryError) -> Unit = {}
 
     init {
         generateImages(fill = false)
@@ -37,13 +38,19 @@ class Repository(private val executorService: ExecutorService) {
 
     fun generateImages(fill: Boolean) {
         stopAllHandlers()
-        val newImageA = Image(size).apply { if (fill) fillRandomly() }
-        val newImageB = Image(newImageA)
-        handlerA = ImageHandler(newImageA, algorithmTypeA, speed, executorService) { pixel ->
-            onPixelFilledA(pixel)
+        try {
+            val newImageA = Image(size).apply { if (fill) fillRandomly() }
+            val newImageB = Image(newImageA)
+
+            handlerA = ImageHandler(newImageA, algorithmTypeA, speed, executorService) { pixel ->
+                onPixelFilledA(pixel)
+            }
+            handlerB = ImageHandler(newImageB, algorithmTypeB, speed, executorService) { pixel ->
+                onPixelFilledB(pixel)
+            }
         }
-        handlerB = ImageHandler(newImageB, algorithmTypeB, speed, executorService) { pixel ->
-            onPixelFilledB(pixel)
+        catch (e: OutOfMemoryError) {
+            onOutOfMemoryError(e)
         }
     }
 
