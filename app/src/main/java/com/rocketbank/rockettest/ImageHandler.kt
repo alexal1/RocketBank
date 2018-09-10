@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService
  * and stop filling process.
  */
 class ImageHandler(val image: Image,
-                   private var algorithmType: Algorithm.Type,
+                   var algorithmType: Algorithm.Type,
                    private var speed: Float,
                    private val executorService: ExecutorService,
                    private var onPixelFilled: (Pixel) -> Unit) {

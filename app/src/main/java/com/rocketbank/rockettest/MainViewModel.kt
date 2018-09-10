@@ -17,15 +17,29 @@ class MainViewModel : ViewModel() {
     val size: Size get() = repository.size
     val updatesA = MutableLiveData<Pixel>()
     val updatesB = MutableLiveData<Pixel>()
+    var algorithmTypeA = Algorithm.Type.FLOOD_FILL
+        set(value) {
+            field = value
+            repository.algorithmTypeA = value
+        }
+    var algorithmTypeB = Algorithm.Type.SCAN_LINE
+        set(value) {
+            field = value
+            repository.algorithmTypeB = value
+        }
 
     fun onCreate() {
         repository = RocketApp.objectGraph.get(Repository::class.java)
+
         repository.onPixelFilledA = { pixel ->
             updatesA.postValue(pixel)
         }
         repository.onPixelFilledB = { pixel ->
             updatesB.postValue(pixel)
         }
+
+        repository.algorithmTypeA = algorithmTypeA
+        repository.algorithmTypeB = algorithmTypeB
     }
 
     fun generateNew() {
