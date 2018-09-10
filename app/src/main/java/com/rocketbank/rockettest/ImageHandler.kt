@@ -9,9 +9,16 @@ import java.util.concurrent.ExecutorService
  */
 class ImageHandler(val image: Image,
                    var algorithmType: Algorithm.Type,
-                   private var speed: Float,
+                   @Volatile var speed: Float,
                    private val executorService: ExecutorService,
                    private var onPixelFilled: (Pixel) -> Unit) {
+
+    companion object {
+
+        const val MIN_DELAY = 0
+        const val MAX_DELAY = 1000
+
+    }
 
     private var algorithmList: Queue<Algorithm> = LinkedList()
 
@@ -21,11 +28,19 @@ class ImageHandler(val image: Image,
             algorithm.startPixel = pixel
             algorithm.onPixelFilled = { pixel ->
                 onPixelFilled(pixel)
-                Thread.sleep(100)
+
+                val delay = delayBySpeed()
+                if (delay > 0) {
+                    Thread.sleep(delay)
+                }
             }
             algorithm.future = executorService.submit(algorithm)
             algorithmList.add(algorithm)
         }
+    }
+
+    private fun delayBySpeed(): Long {
+        return (MAX_DELAY + speed * (MIN_DELAY - MAX_DELAY)).toLong()
     }
 
     fun stop() {

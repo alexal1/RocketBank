@@ -27,6 +27,11 @@ class MainViewModel : ViewModel() {
             field = value
             repository.algorithmTypeB = value
         }
+    var speed = 0.5f
+        set(value) {
+            field = value
+            repository.speed = speed
+        }
 
     fun onCreate() {
         repository = RocketApp.objectGraph.get(Repository::class.java)
@@ -40,6 +45,7 @@ class MainViewModel : ViewModel() {
 
         repository.algorithmTypeA = algorithmTypeA
         repository.algorithmTypeB = algorithmTypeB
+        repository.speed = speed
     }
 
     fun generateNew() {

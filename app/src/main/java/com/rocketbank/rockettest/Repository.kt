@@ -13,6 +13,11 @@ class Repository(private val executorService: ExecutorService) {
     val imageB get() = handlerB?.image
     var size = Size(16, 16)
     var speed = 0.5f
+        set(value) {
+            field = value
+            handlerA?.speed = value
+            handlerB?.speed = value
+        }
     var algorithmTypeA = Algorithm.Type.FLOOD_FILL_BFS
         set(value) {
             field = value
