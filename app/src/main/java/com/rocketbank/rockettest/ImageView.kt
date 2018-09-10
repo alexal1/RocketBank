@@ -7,13 +7,16 @@ import android.graphics.PointF
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
+import android.view.SurfaceHolder
+import android.view.SurfaceView
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Future
 import kotlin.math.truncate
 
 /**
  * Custom widget that draws given Image.
  */
-class ImageView : View {
+class ImageView : SurfaceView, SurfaceHolder.Callback {
 
     constructor(context: Context) : super(context)
 
@@ -26,16 +29,47 @@ class ImageView : View {
     private var pixelWidth = 0f
     private var pixelHeight = 0f
     private var touchDown: Pixel? = null
+    private var future: Future<*>? = null
     private val colorWhite = ContextCompat.getColor(context, R.color.white)
     private val colorBlack = ContextCompat.getColor(context, R.color.black)
     private val colorRed = ContextCompat.getColor(context, R.color.red)
     private val paintWhite = Paint().apply { color = colorWhite }
     private val paintBlack = Paint().apply { color = colorBlack }
     private val paintReplacement = Paint().apply { color = colorRed }
+    private val executorService = RocketApp.objectGraph.get(ExecutorService::class.java)
 
-    fun drawImage(image: Image) {
+    init {
+        holder.addCallback(this)
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {}
+
+    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+        future?.cancel(true)
+    }
+
+    override fun surfaceCreated(holder: SurfaceHolder?) {
+        drawImage()
+    }
+
+    fun drawImage(image: Image? = currentImage) {
+        image ?: return
         currentImage = image
-        invalidate()
+        future?.cancel(true)
+        future = executorService.submit {
+            var canvas: Canvas? = null
+            try {
+                canvas = holder.lockCanvas()
+                if (canvas != null) {
+                    synchronized(holder) {
+                        drawImageOnCanvas(canvas, image)
+                    }
+                }
+            }
+            finally {
+                holder.unlockCanvasAndPost(canvas)
+            }
+        }
     }
 
     private fun drawImageOnCanvas(canvas: Canvas, image: Image) {
@@ -61,14 +95,6 @@ class ImageView : View {
             Image.Color.REPLACEMENT -> paintReplacement
         }
         canvas.drawRect(left, top, left + pixelWidth, top + pixelHeight, paint)
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        currentImage?.let { image ->
-            drawImageOnCanvas(canvas, image)
-        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

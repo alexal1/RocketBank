@@ -23,10 +23,10 @@ class MainActivity : FragmentActivity() {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
             updatesA.observe(this@MainActivity, Observer {
-                this@MainActivity.imageA.invalidate()
+                this@MainActivity.imageA.drawImage()
             })
             updatesB.observe(this@MainActivity, Observer {
-                this@MainActivity.imageB.invalidate()
+                this@MainActivity.imageB.drawImage()
             })
         }
         setListeners()

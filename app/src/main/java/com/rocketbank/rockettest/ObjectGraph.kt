@@ -1,5 +1,6 @@
 package com.rocketbank.rockettest
 
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 /**
@@ -10,8 +11,11 @@ class ObjectGraph {
     private val dependencies = HashMap<Class<*>, Any>()
 
     init {
-        val threadPoolExecutor = Executors.newFixedThreadPool(4)
-        val repository = Repository(threadPoolExecutor)
+        val algorithmExecutor = Executors.newFixedThreadPool(4)
+        val drawingExecutor = Executors.newFixedThreadPool(2)
+        val repository = Repository(algorithmExecutor)
+
+        dependencies[ExecutorService::class.java] = drawingExecutor
         dependencies[Repository::class.java] = repository
     }
 
