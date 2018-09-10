@@ -1,4 +1,4 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.views
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -6,6 +6,8 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.rocketbank.rockettest.MainViewModel
+import com.rocketbank.rockettest.R
 import kotlinx.android.synthetic.main.fragment_size_choose.*
 
 class SizeChooseFragment : DialogFragment() {

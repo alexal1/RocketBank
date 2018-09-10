@@ -1,4 +1,4 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.views
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -11,6 +11,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.Toast
+import com.rocketbank.rockettest.MainViewModel
+import com.rocketbank.rockettest.R
+import com.rocketbank.rockettest.algorithms.Algorithm
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : FragmentActivity() {

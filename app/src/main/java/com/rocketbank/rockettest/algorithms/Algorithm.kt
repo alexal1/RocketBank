@@ -1,5 +1,8 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.algorithms
 
+import com.rocketbank.rockettest.model.Image
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.R
 import java.util.concurrent.Future
 
 interface Algorithm : Runnable {

@@ -1,4 +1,4 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.views
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,6 +9,10 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.rocketbank.rockettest.model.Image
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.R
+import com.rocketbank.rockettest.RocketApp
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import kotlin.math.truncate

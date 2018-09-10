@@ -1,5 +1,6 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.helpers
 
+import com.rocketbank.rockettest.model.Repository
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 

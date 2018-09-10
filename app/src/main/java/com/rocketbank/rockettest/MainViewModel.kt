@@ -3,6 +3,11 @@ package com.rocketbank.rockettest
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.text.TextUtils
+import com.rocketbank.rockettest.algorithms.Algorithm
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.helpers.Size
+import com.rocketbank.rockettest.model.Image
+import com.rocketbank.rockettest.model.Repository
 
 /**
  * ViewModel class for the MainActivity.

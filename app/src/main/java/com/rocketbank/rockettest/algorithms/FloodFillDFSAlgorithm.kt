@@ -1,9 +1,11 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.algorithms
 
+import com.rocketbank.rockettest.model.Image
+import com.rocketbank.rockettest.helpers.Pixel
 import java.util.*
 import java.util.concurrent.Future
 
-class FloodFillBFSAlgorithm : Algorithm {
+class FloodFillDFSAlgorithm : Algorithm {
 
     override lateinit var image: Image
     override lateinit var startPixel: Pixel
@@ -11,7 +13,7 @@ class FloodFillBFSAlgorithm : Algorithm {
     override lateinit var future: Future<*>
 
     @Volatile private var isRunning = false
-    private val queue: Queue<Pixel> = LinkedList()
+    private val stack = Stack<Pixel>()
 
     override fun run() {
         if (image[startPixel] != Image.Color.WHITE) {
@@ -19,19 +21,19 @@ class FloodFillBFSAlgorithm : Algorithm {
         }
 
         image[startPixel] = Image.Color.REPLACEMENT
-        queue.add(startPixel)
+        stack.push(startPixel)
         onPixelFilled(startPixel)
 
         isRunning = true
-        while (isRunning && queue.isNotEmpty()) {
-            val pixel = queue.poll()
+        while (isRunning && stack.isNotEmpty()) {
+            val pixel = stack.pop()
 
             // West
             if (pixel.j > 0) {
                 val westPixel = Pixel(pixel.i, pixel.j - 1)
                 if (image[westPixel] == Image.Color.WHITE) {
                     image[westPixel] = Image.Color.REPLACEMENT
-                    queue.add(westPixel)
+                    stack.push(westPixel)
                     onPixelFilled(westPixel)
                 }
             }
@@ -41,7 +43,7 @@ class FloodFillBFSAlgorithm : Algorithm {
                 val eastPixel = Pixel(pixel.i, pixel.j + 1)
                 if (image[eastPixel] == Image.Color.WHITE) {
                     image[eastPixel] = Image.Color.REPLACEMENT
-                    queue.add(eastPixel)
+                    stack.push(eastPixel)
                     onPixelFilled(eastPixel)
                 }
             }
@@ -51,7 +53,7 @@ class FloodFillBFSAlgorithm : Algorithm {
                 val northPixel = Pixel(pixel.i - 1, pixel.j)
                 if (image[northPixel] == Image.Color.WHITE) {
                     image[northPixel] = Image.Color.REPLACEMENT
-                    queue.add(northPixel)
+                    stack.push(northPixel)
                     onPixelFilled(northPixel)
                 }
             }
@@ -61,7 +63,7 @@ class FloodFillBFSAlgorithm : Algorithm {
                 val southPixel = Pixel(pixel.i + 1, pixel.j)
                 if (image[southPixel] == Image.Color.WHITE) {
                     image[southPixel] = Image.Color.REPLACEMENT
-                    queue.add(southPixel)
+                    stack.push(southPixel)
                     onPixelFilled(southPixel)
                 }
             }

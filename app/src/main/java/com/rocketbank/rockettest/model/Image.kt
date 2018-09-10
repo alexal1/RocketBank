@@ -1,5 +1,7 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.model
 
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.helpers.Size
 import java.util.*
 
 /**

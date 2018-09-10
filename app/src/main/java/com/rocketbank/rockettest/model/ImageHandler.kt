@@ -1,5 +1,8 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.model
 
+import com.rocketbank.rockettest.algorithms.Algorithm
+import com.rocketbank.rockettest.algorithms.AlgorithmFactory
+import com.rocketbank.rockettest.helpers.Pixel
 import java.util.*
 import java.util.concurrent.ExecutorService
 

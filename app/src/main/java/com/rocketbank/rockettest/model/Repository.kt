@@ -1,6 +1,9 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.model
 
 import android.os.Handler
+import com.rocketbank.rockettest.algorithms.Algorithm
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.helpers.Size
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 

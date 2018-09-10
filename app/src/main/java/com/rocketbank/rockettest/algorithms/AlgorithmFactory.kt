@@ -1,4 +1,4 @@
-package com.rocketbank.rockettest
+package com.rocketbank.rockettest.algorithms
 
 object AlgorithmFactory {
 
