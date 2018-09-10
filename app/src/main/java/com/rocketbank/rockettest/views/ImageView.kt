@@ -9,10 +9,10 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.rocketbank.rockettest.model.Image
-import com.rocketbank.rockettest.helpers.Pixel
 import com.rocketbank.rockettest.R
 import com.rocketbank.rockettest.RocketApp
+import com.rocketbank.rockettest.helpers.Pixel
+import com.rocketbank.rockettest.model.Image
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import kotlin.math.truncate
@@ -36,10 +36,10 @@ class ImageView : SurfaceView, SurfaceHolder.Callback {
     private var future: Future<*>? = null
     private val colorWhite = ContextCompat.getColor(context, R.color.white)
     private val colorBlack = ContextCompat.getColor(context, R.color.black)
-    private val colorRed = ContextCompat.getColor(context, R.color.red)
+    private val colorReplacement = ContextCompat.getColor(context, R.color.colorAccent)
     private val paintWhite = Paint().apply { color = colorWhite }
     private val paintBlack = Paint().apply { color = colorBlack }
-    private val paintReplacement = Paint().apply { color = colorRed }
+    private val paintReplacement = Paint().apply { color = colorReplacement }
     private val executorService = RocketApp.objectGraph.get(ExecutorService::class.java)
 
     init {
