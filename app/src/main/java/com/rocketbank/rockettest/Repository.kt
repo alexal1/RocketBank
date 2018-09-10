@@ -1,6 +1,8 @@
 package com.rocketbank.rockettest
 
+import android.os.Handler
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Future
 
 /**
  * Business logic of the application.
@@ -9,6 +11,7 @@ class Repository(private val executorService: ExecutorService) {
 
     private var handlerA: ImageHandler? = null
     private var handlerB: ImageHandler? = null
+    private var memoryAllocationFuture: Future<*>? = null
     val imageA get() = handlerA?.image
     val imageB get() = handlerB?.image
     var size = Size(16, 16)
@@ -28,6 +31,7 @@ class Repository(private val executorService: ExecutorService) {
             field = value
             handlerB?.algorithmType = value
         }
+    var onImagesGenerated: (Image) -> Unit = {}
     var onPixelFilledA: (Pixel) -> Unit = {}
     var onPixelFilledB: (Pixel) -> Unit = {}
     var onOutOfMemoryError: (OutOfMemoryError) -> Unit = {}
@@ -38,19 +42,27 @@ class Repository(private val executorService: ExecutorService) {
 
     fun generateImages(fill: Boolean) {
         stopAllHandlers()
-        try {
-            val newImageA = Image(size).apply { if (fill) fillRandomly() }
-            val newImageB = Image(newImageA)
+        val threadHandler = Handler()
+        memoryAllocationFuture?.cancel(true)
+        memoryAllocationFuture = executorService.submit {
+            try {
+                val newImageA = Image(size).apply { if (fill) fillRandomly() }
+                val newImageB = Image(newImageA)
 
-            handlerA = ImageHandler(newImageA, algorithmTypeA, speed, executorService) { pixel ->
-                onPixelFilledA(pixel)
+                threadHandler.post {
+                    handlerA = ImageHandler(newImageA, algorithmTypeA, speed, executorService) { pixel ->
+                        onPixelFilledA(pixel)
+                    }
+                    handlerB = ImageHandler(newImageB, algorithmTypeB, speed, executorService) { pixel ->
+                        onPixelFilledB(pixel)
+                    }
+
+                    onImagesGenerated(newImageA)
+                }
             }
-            handlerB = ImageHandler(newImageB, algorithmTypeB, speed, executorService) { pixel ->
-                onPixelFilledB(pixel)
+            catch (e: OutOfMemoryError) {
+                onOutOfMemoryError(e)
             }
-        }
-        catch (e: OutOfMemoryError) {
-            onOutOfMemoryError(e)
         }
     }
 

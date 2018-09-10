@@ -24,13 +24,15 @@ class MainActivity : FragmentActivity() {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java).apply {
             onCreate()
 
+            imagesGenerated.observe(this@MainActivity, Observer {
+                setImages()
+            })
             updatesA.observe(this@MainActivity, Observer {
                 this@MainActivity.imageA.drawImage()
             })
             updatesB.observe(this@MainActivity, Observer {
                 this@MainActivity.imageB.drawImage()
             })
-
             errors.observe(this@MainActivity, Observer { error ->
                 Toast.makeText(this@MainActivity, error.toString(), Toast.LENGTH_LONG).show()
             })
@@ -39,12 +41,6 @@ class MainActivity : FragmentActivity() {
         setListeners()
         setSpinner()
         setEditTexts()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        setImages()
     }
 
     private fun setImages() {
@@ -60,7 +56,6 @@ class MainActivity : FragmentActivity() {
     private fun setListeners() {
         buttonGenerate.setOnClickListener {
             mainViewModel.generateNew()
-            setImages()
         }
         buttonSize?.setOnClickListener {
             val transaction = supportFragmentManager

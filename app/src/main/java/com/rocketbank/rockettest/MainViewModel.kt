@@ -16,6 +16,7 @@ class MainViewModel : ViewModel() {
     val imageA: Image? get() = repository.imageA
     val imageB: Image? get() = repository.imageB
     val size: Size get() = repository.size
+    val imagesGenerated = MutableLiveData<Image>()
     val updatesA = MutableLiveData<Pixel>()
     val updatesB = MutableLiveData<Pixel>()
     val errors = MutableLiveData<Throwable>()
@@ -38,13 +39,15 @@ class MainViewModel : ViewModel() {
     fun onCreate() {
         repository = RocketApp.objectGraph.get(Repository::class.java)
 
+        repository.onImagesGenerated = { image ->
+            imagesGenerated.postValue(image)
+        }
         repository.onPixelFilledA = { pixel ->
             updatesA.postValue(pixel)
         }
         repository.onPixelFilledB = { pixel ->
             updatesB.postValue(pixel)
         }
-
         repository.onOutOfMemoryError = { error ->
             errors.postValue(error)
         }
