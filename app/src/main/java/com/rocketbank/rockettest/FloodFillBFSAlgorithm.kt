@@ -3,7 +3,7 @@ package com.rocketbank.rockettest
 import java.util.*
 import java.util.concurrent.Future
 
-class FloodFillAlgorithm : Algorithm {
+class FloodFillBFSAlgorithm : Algorithm {
 
     override lateinit var image: Image
     override lateinit var startPixel: Pixel

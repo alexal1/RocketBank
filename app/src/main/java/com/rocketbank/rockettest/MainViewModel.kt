@@ -17,7 +17,7 @@ class MainViewModel : ViewModel() {
     val size: Size get() = repository.size
     val updatesA = MutableLiveData<Pixel>()
     val updatesB = MutableLiveData<Pixel>()
-    var algorithmTypeA = Algorithm.Type.FLOOD_FILL
+    var algorithmTypeA = Algorithm.Type.FLOOD_FILL_BFS
         set(value) {
             field = value
             repository.algorithmTypeA = value
@@ -43,7 +43,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun generateNew() {
-        repository.generateImages()
+        repository.generateImages(fill = true)
     }
 
     fun startFromPixel(pixel: Pixel) {

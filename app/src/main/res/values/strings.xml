@@ -4,6 +4,7 @@
     <string name="generate">Generate</string>
     <string name="speed">Speed</string>
     <string name="cross" translatable="false">X</string>
-    <string name="flood_fill_algorithm">Flood Fill</string>
+    <string name="flood_fill_bfs_algorithm">Flood Fill (BFS)</string>
+    <string name="flood_fill_dfs_algorithm">Flood Fill (DFS)</string>
     <string name="scan_line_algorithm">Scan Line</string>
 </resources>

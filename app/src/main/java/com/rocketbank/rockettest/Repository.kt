@@ -13,7 +13,7 @@ class Repository(private val executorService: ExecutorService) {
     val imageB get() = handlerB?.image
     var size = Size(16, 16)
     var speed = 0.5f
-    var algorithmTypeA = Algorithm.Type.FLOOD_FILL
+    var algorithmTypeA = Algorithm.Type.FLOOD_FILL_BFS
         set(value) {
             field = value
             handlerA?.algorithmType = value
@@ -26,9 +26,13 @@ class Repository(private val executorService: ExecutorService) {
     var onPixelFilledA: (Pixel) -> Unit = {}
     var onPixelFilledB: (Pixel) -> Unit = {}
 
-    fun generateImages() {
+    init {
+        generateImages(fill = false)
+    }
+
+    fun generateImages(fill: Boolean) {
         stopAllHandlers()
-        val newImageA = Image(size).apply { fillRandomly() }
+        val newImageA = Image(size).apply { if (fill) fillRandomly() }
         val newImageB = Image(newImageA)
         handlerA = ImageHandler(newImageA, algorithmTypeA, speed, executorService) { pixel ->
             onPixelFilledA(pixel)
